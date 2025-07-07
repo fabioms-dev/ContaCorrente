@@ -6,9 +6,7 @@ namespace ContaCorrente.Domain.Dto
     /// Cliente Data Transfer Object (DTO)
     /// </summary>
     public class ClienteDto
-    {
-        [JsonIgnore]
-        public string IdContaCorrente { get; set; }
+    {        
         public string Nome { get; set; }
         public string Cpf { get; set; }
         public string Senha { get; set; }
@@ -18,5 +16,5 @@ namespace ContaCorrente.Domain.Dto
         public int Ativo { get; set; }
         [JsonIgnore]
         public string Salt { get; set; }
-    }
+    }    
 }

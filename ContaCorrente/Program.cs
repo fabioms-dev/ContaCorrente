@@ -1,5 +1,9 @@
 using Application.Interface;
 using ContaCorrente.Application;
+using ContaCorrente.Domain;
+using ContaCorrente.Domain.Interface;
+using ContaCorrente.Infrastructure.Interface;
+using ContaCorrente.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,8 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IContaCorrenteApplication, ContaCorrenteApplication>();
+builder.Services.AddScoped<IDominioCliente, DominioCliente>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 
 var app = builder.Build();
 

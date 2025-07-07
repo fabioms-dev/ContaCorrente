@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ContaCorrente.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class ContaCorrenteController : ControllerBase
     {
         private readonly ILogger<ContaCorrenteController> _logger;
@@ -29,7 +29,7 @@ namespace ContaCorrente.Controllers
         /// Cadastrar conta corrente
         /// </summary>
         /// <returns></returns>
-        [HttpPost("api/cadastrar")]
+        [HttpPost("api/cadastrar")]        
         public async Task<IActionResult> Cadastrar([FromBody] ClienteDto clienteDto)
         {
             try
@@ -39,6 +39,10 @@ namespace ContaCorrente.Controllers
                 return Ok(numeroConta);
             }
             catch (CpfInvalidoException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (CpfJaPossuiContaException ex)
             {
                 return BadRequest(ex.Message);
             }

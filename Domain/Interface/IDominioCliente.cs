@@ -1,6 +1,4 @@
-﻿using ContaCorrente.Domain.Dto;
-
-namespace ContaCorrente.Domain.Interface
+﻿namespace ContaCorrente.Domain.Interface
 {
     public interface IDominioCliente
     {
@@ -12,10 +10,17 @@ namespace ContaCorrente.Domain.Interface
         Task<bool> ValidarClienteCpf(string cpf);
 
         /// <summary>
-        /// Criar conta do cliente no banco de dados
+        /// Gerar hash da senha
         /// </summary>
-        /// <param name="cliente"></param>
+        /// <param name="senha"></param>
+        /// <param name="salt"></param>
         /// <returns></returns>
-        Task<string> CriarContaClienteNoBanco(ClienteDto cliente);
+        string GerarHashSenha(string senha, out byte[] salt);
+
+        /// <summary>
+        /// Gerar número da conta
+        /// </summary>
+        /// <returns></returns>
+        string GerarNumeroConta();
     }
 }
