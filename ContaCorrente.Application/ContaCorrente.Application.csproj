@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.66" />	  
+    <ProjectReference Include="..\ContaCorrente.Infrastructure\ContaCorrente.Infrastructure.csproj" />
+    <ProjectReference Include="..\Domain\ContaCorrente.Domain.csproj" />
   </ItemGroup>
 
 </Project>
