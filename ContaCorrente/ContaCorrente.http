@@ -1,0 +1,6 @@
+@ContaCorrente_HostAddress = http://localhost:5299
+
+GET {{ContaCorrente_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
