@@ -72,11 +72,7 @@ namespace ContaCorrente.Application
         /// <exception cref="Exception"></exception>
         public async Task<AutenticacaoDto> ValidarLogin(LoginRequestDto loginRequestDto)
         {
-            var cliente = await _clienteRepository.ObterClientePorCpf(loginRequestDto.Cpf) ?? throw new Exception("Cadastro não encontrado");
-            var senhaHash = _dominioCliente.GerarHashSenha(loginRequestDto.Senha, out string salt);
-
-            if (cliente.Senha.Length % 2 != 0)
-                throw new ArgumentException("A hex string precisa ter um número par de caracteres.");
+            var cliente = await _clienteRepository.ObterClientePorCpf(loginRequestDto.Cpf) ?? throw new Exception("Cadastro não encontrado");            
             
             if (!_dominioCliente.ValidarSenha(cliente.Senha, cliente.Salt, loginRequestDto.Senha))
                 throw new UsuarioNaoAutorizadoException(
@@ -84,6 +80,33 @@ namespace ContaCorrente.Application
                     TipoFalha.User_Unauthorized);
                                             
             return _dominioCliente.GerarTokenAutenticacao(cliente.IdContaCorrente);
-        }        
+        }
+
+        /// <summary>
+        /// Inativar conta corrente do cliente
+        /// </summary>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="loginRequestDto"></param>
+        /// <returns></returns>
+        /// <exception cref="ContaInvalidaException"></exception>
+        /// <exception cref="UsuarioNaoAutorizadoException"></exception>
+        /// <exception cref="Exception"></exception>
+        public async Task InativarContaCorrente(string tokenAutenticacao, LoginRequestDto loginRequestDto)
+        {
+            var cliente = await _clienteRepository.ObterClientePorCpf(loginRequestDto.Cpf) ?? throw new ContaInvalidaException("Conta invalida. Tipo de falha: {0}.", TipoFalha.Invalid_Account);
+
+            if (!_dominioCliente.ValidarSenha(cliente.Senha, cliente.Salt, loginRequestDto.Senha) && !_dominioCliente.ValidarDataExpiracaoToken(tokenAutenticacao))
+                throw new UsuarioNaoAutorizadoException(
+                    "Usuário inválido, verique suas credencias. Tipo de falha: {0}.",
+                    TipoFalha.User_Unauthorized);
+            try
+            {
+                await _clienteRepository.InativarContaCliente(cliente.IdContaCorrente);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao gravar dados do cliente: " + ex.Message);
+            }
+        }
     }
 }

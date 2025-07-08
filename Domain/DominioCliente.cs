@@ -56,14 +56,14 @@ namespace ContaCorrente.Domain
             byte[] saltBytes = new byte[16];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(saltBytes);
-            
+
             using var pbkdf2 = new Rfc2898DeriveBytes(senha, saltBytes, 100_000, HashAlgorithmName.SHA256);
             byte[] hashBytes = pbkdf2.GetBytes(32);
-            
+
             saltBase64 = Convert.ToBase64String(saltBytes);
             string hashBase64 = Convert.ToBase64String(hashBytes);
 
-            return hashBase64;            
+            return hashBase64;
         }
 
         /// <summary>
@@ -117,8 +117,29 @@ namespace ContaCorrente.Domain
 
             using var pbkdf2 = new Rfc2898DeriveBytes(loginSenha, saltBytes, 100_000, HashAlgorithmName.SHA256);
             byte[] hashBytesInformado = pbkdf2.GetBytes(32);
-            
+
             return CryptographicOperations.FixedTimeEquals(hashBytesArmazenado, hashBytesInformado);
+        }
+
+        /// <summary>
+        /// Validar data de expiração do token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public bool ValidarDataExpiracaoToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();            
+
+            if (!handler.CanReadToken(token))
+                return false;
+
+            var tokenJwt = handler.ReadJwtToken(token);            
+            var dataExpiracaoUtc = tokenJwt.ValidTo;
+
+            if ((dataExpiracaoUtc == DateTime.MinValue) ||(dataExpiracaoUtc < DateTime.UtcNow))
+                return false;
+
+            return true;            
         }
     }
 }

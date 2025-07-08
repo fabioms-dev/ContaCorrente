@@ -28,5 +28,12 @@ namespace ContaCorrente.Infrastructure.Interface
         /// <param name="cpf"></param>
         /// <returns></returns>
         Task<Cliente> ObterClientePorCpf(string cpf);
+
+        /// <summary>
+        /// Gravar dados do cliente no banco de dados
+        /// </summary>
+        /// <param name="idContaCorrente"></param>
+        /// <returns></returns>        
+        Task InativarContaCliente(string idContaCorrente);
     }
 }

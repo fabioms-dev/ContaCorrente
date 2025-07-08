@@ -52,7 +52,6 @@ namespace ContaCorrente.Controllers
             }
         }
 
-
         /// <summary>
         /// Efetuar login na conta corrente
         /// </summary>
@@ -73,10 +72,38 @@ namespace ContaCorrente.Controllers
             {
                 return Unauthorized(ex.Message);
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-                return BadRequest(e.Message);
+                return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Inativar login na conta corrente
+        /// </summary>
+        /// <returns> </returns>
+        [HttpPut("api/inativar")]
+        public async Task<IActionResult> InativarConta([FromHeader] string tokenAutenticacao, [FromBody] LoginRequestDto loginRequestDto)
+        {
+            try
+            {
+                await _contaCorrenteApplication.InativarContaCorrente(tokenAutenticacao, loginRequestDto);                
+                return NoContent();
+            }
+            catch (ContaInvalidaException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (UsuarioNaoAutorizadoException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

@@ -20,5 +20,16 @@ namespace Application.Interface
         /// <param name="loginRequestDto"></param>
         /// <returns></returns>        
         Task<AutenticacaoDto> ValidarLogin(LoginRequestDto loginRequestDto);
+
+        /// <summary>
+        /// Inativar conta corrente do cliente
+        /// </summary>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="loginRequestDto"></param>
+        /// <returns></returns>
+        /// <exception cref="ContaInvalidaException"></exception>
+        /// <exception cref="UsuarioNaoAutorizadoException"></exception>
+        /// <exception cref="Exception"></exception>
+        Task InativarContaCorrente(string tokenAutenticacao, LoginRequestDto loginRequestDto);
     }
 }

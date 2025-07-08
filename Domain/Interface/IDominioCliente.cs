@@ -43,5 +43,12 @@ namespace ContaCorrente.Domain.Interface
         /// <param name="loginSenha"></param>
         /// <returns></returns>
         bool ValidarSenha(string clienteSenha, string clienteSalt, string loginSenha);
+
+        /// <summary>
+        /// Validar data de expiração do token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        bool ValidarDataExpiracaoToken(string token);
     }
 }

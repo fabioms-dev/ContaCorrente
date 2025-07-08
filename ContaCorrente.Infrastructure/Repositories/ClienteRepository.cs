@@ -42,7 +42,7 @@ namespace ContaCorrente.Infrastructure.Repositories
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
             await connection.ExecuteScalarAsync<int>("INSERT INTO contacorrente (idcontacorrente, numero, nome, ativo, senha, salt)" +
-                                                     "VALUES (@idcontacorrente, @numero, @nome, @ativo, @senha, @salt);",
+                                                     "VALUES (@idcontacorrente, @numero, @nome, @ativo, @senha, @salt)",
                                                      new
                                                      {
                                                          idcontacorrente = cliente.IdContaCorrente,
@@ -74,6 +74,22 @@ namespace ContaCorrente.Infrastructure.Repositories
                 " FROM contacorrente WHERE idcontacorrente = @cpf", new { cpf });
             connection.Close();
             return cliente;
+        }
+
+        /// <summary>
+        /// Gravar dados do cliente no banco de dados
+        /// </summary>
+        /// <param name="idContaCorrente"></param>
+        /// <returns></returns>        
+        public async Task InativarContaCliente(string idContaCorrente)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            await connection.ExecuteScalarAsync<int>("UPDATE contacorrente" +
+                                                     "SET ativo = 0" +
+                                                     "VALUES idcontacorrente = @idcontacorrente",
+                                                     new { idcontacorrente = idContaCorrente });
+            connection.Close();
         }
     }
 }

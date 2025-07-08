@@ -12,5 +12,8 @@ namespace ContaCorrente.Domain.Enum
 
         [Description("Usuário não autorizado")]
         User_Unauthorized = 2,
+
+        [Description("Conta inválida")]
+        Invalid_Account = 3,
     }  
 }
