@@ -3,6 +3,9 @@ using ContaCorrente.Domain.Entidade;
 
 namespace ContaCorrente.Infrastructure.Interface
 {
+    /// <summary>
+    /// Cliente Repository Interface
+    /// </summary>
     public interface IClienteRepository
     {
         /// <summary>
@@ -18,5 +21,12 @@ namespace ContaCorrente.Infrastructure.Interface
         /// <param name="cliente"></param>
         /// <returns></returns>
         Task GravarDadosCliente(Cliente cliente);
+
+        /// <summary>
+        /// Obter Cliente por CPF
+        /// </summary>
+        /// <param name="cpf"></param>
+        /// <returns></returns>
+        Task<Cliente> ObterClientePorCpf(string cpf);
     }
 }

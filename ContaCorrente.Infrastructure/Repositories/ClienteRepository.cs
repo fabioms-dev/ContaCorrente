@@ -5,6 +5,9 @@ using Microsoft.Data.SqlClient;
 
 namespace ContaCorrente.Infrastructure.Repositories
 {
+    /// <summary>
+    /// Cliente Repository
+    /// </summary>
     public class ClienteRepository : IClienteRepository
     {
         const string _connectionString = "Data Source=DESKTOP-ST6PSQ7;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
@@ -49,7 +52,28 @@ namespace ContaCorrente.Infrastructure.Repositories
                                                          senha = cliente.Senha,
                                                          salt = cliente.Salt
                                                      });
-            connection.Close();            
+            connection.Close();
+        }
+
+        /// <summary>
+        /// Obter Cliente por CPF
+        /// </summary>
+        /// <param name="cpf"></param>
+        /// <returns></returns>
+        public async Task<Cliente> ObterClientePorCpf(string cpf)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            var cliente = await connection.QueryFirstOrDefaultAsync<Cliente>(
+                "SELECT idcontacorrente as IdContaCorrente," +
+                " numero as NumeroConta," +
+                " nome as Nome," +
+                " ativo as Ativo," +
+                " senha as Senha," +
+                " salt as Salt" +
+                " FROM contacorrente WHERE idcontacorrente = @cpf", new { cpf });
+            connection.Close();
+            return cliente;
         }
     }
 }

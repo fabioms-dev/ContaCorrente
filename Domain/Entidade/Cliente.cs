@@ -2,11 +2,13 @@
 
 namespace ContaCorrente.Domain.Entidade
 {
+    /// <summary>
+    /// Cliente entidade
+    /// </summary>
     public class Cliente
     {
         public string IdContaCorrente { get; set; }
-        public string Nome { get; set; }
-        public string Cpf { get; set; }
+        public string Nome { get; set; }        
         public string Senha { get; set; }
         public string NumeroConta { get; set; }
         public int Ativo { get; set; }
@@ -28,5 +30,11 @@ namespace ContaCorrente.Domain.Entidade
             Ativo = 1;
             Salt = salt;
         }
+
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        public Cliente() { }
+
     }
 }

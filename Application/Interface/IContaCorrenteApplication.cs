@@ -13,5 +13,12 @@ namespace Application.Interface
         /// <returns>Task<string></returns>
         /// <param name="clienteDto"></param>
         Task<string> CadastrarCliente(ClienteDto clienteDto);
+
+        /// <summary>
+        /// Validar login do cliente
+        /// </summary>
+        /// <param name="loginRequestDto"></param>
+        /// <returns></returns>        
+        Task<AutenticacaoDto> ValidarLogin(LoginRequestDto loginRequestDto);
     }
 }

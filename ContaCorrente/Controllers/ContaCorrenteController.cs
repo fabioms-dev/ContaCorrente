@@ -3,9 +3,13 @@ using Application.Interface;
 using ContaCorrente.Domain.Dto;
 using ContaCorrente.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens.Experimental;
 
 namespace ContaCorrente.Controllers
 {
+    /// <summary>
+    /// Conta Corrente Controller
+    /// </summary>
     [ApiController]
     [Route("")]
     public class ContaCorrenteController : ControllerBase
@@ -29,7 +33,7 @@ namespace ContaCorrente.Controllers
         /// Cadastrar conta corrente
         /// </summary>
         /// <returns></returns>
-        [HttpPost("api/cadastrar")]        
+        [HttpPost("api/cadastrar")]
         public async Task<IActionResult> Cadastrar([FromBody] ClienteDto clienteDto)
         {
             try
@@ -45,6 +49,33 @@ namespace ContaCorrente.Controllers
             catch (CpfJaPossuiContaException ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Efetuar login na conta corrente
+        /// </summary>
+        /// <returns> </returns>
+        [HttpPost("api/login")]        
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        {
+            try
+            {
+                var token = await _contaCorrenteApplication.ValidarLogin(loginRequestDto);
+
+                _logger.LogInformation("Realizado validação do login do cliente com sucesso.");
+                _logger.LogInformation("Realizado a geração do token de autenticação.");
+
+                return Ok(token);
+            }
+            catch (UsuarioNaoAutorizadoException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }

@@ -5,6 +5,7 @@ using ContaCorrente.Domain.Enum;
 using ContaCorrente.Domain.Exceptions;
 using ContaCorrente.Domain.Interface;
 using ContaCorrente.Infrastructure.Interface;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ContaCorrente.Application
@@ -46,9 +47,9 @@ namespace ContaCorrente.Application
             if (await _clienteRepository.VerificaSeCpfJaEstaCadastrado(clienteDto.Cpf) == 1)
                 throw new CpfJaPossuiContaException("CPF já possui conta cadastrada");
 
-            var senha = _dominioCliente.GerarHashSenha(clienteDto.Senha, out byte[] salt);
+            var senha = _dominioCliente.GerarHashSenha(clienteDto.Senha, out string salt);
             var numeroConta = _dominioCliente.GerarNumeroConta();
-            var cliente = new Cliente(clienteDto, Encoding.UTF8.GetString(salt), senha, numeroConta);
+            var cliente = new Cliente(clienteDto, salt, senha, numeroConta);
 
             try
             {
@@ -61,5 +62,28 @@ namespace ContaCorrente.Application
 
             return numeroConta;
         }
+
+        /// <summary>
+        /// Validar login do cliente
+        /// </summary>
+        /// <param name="loginRequestDto"></param>
+        /// <returns></returns>
+        /// <exception cref="CpfInvalidoException"></exception>
+        /// <exception cref="Exception"></exception>
+        public async Task<AutenticacaoDto> ValidarLogin(LoginRequestDto loginRequestDto)
+        {
+            var cliente = await _clienteRepository.ObterClientePorCpf(loginRequestDto.Cpf) ?? throw new Exception("Cadastro não encontrado");
+            var senhaHash = _dominioCliente.GerarHashSenha(loginRequestDto.Senha, out string salt);
+
+            if (cliente.Senha.Length % 2 != 0)
+                throw new ArgumentException("A hex string precisa ter um número par de caracteres.");
+            
+            if (!_dominioCliente.ValidarSenha(cliente.Senha, cliente.Salt, loginRequestDto.Senha))
+                throw new UsuarioNaoAutorizadoException(
+                    "Usuário inválido, verique suas credencias. Tipo de falha: {0}.",
+                    TipoFalha.User_Unauthorized);
+                                            
+            return _dominioCliente.GerarTokenAutenticacao(cliente.IdContaCorrente);
+        }        
     }
 }
