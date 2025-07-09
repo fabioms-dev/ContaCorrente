@@ -133,6 +133,8 @@ namespace ContaCorrente.Application
                     "Token expirado. Tipo de falha: {0}.",
                     TipoFalha.User_Unauthorized);
 
+            movimentacaoContaDto.TipoMovimento ??= 'D';                
+
             if (cliente.Ativo == 0)
                 throw new ContaInativaException("Conta inativa. Tipo de falha: {0}.", TipoFalha.Inactive_Account);
 

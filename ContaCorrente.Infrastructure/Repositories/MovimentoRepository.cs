@@ -45,7 +45,7 @@ namespace ContaCorrente.Infrastructure.Repositories
                                                      "VALUES (@idmovimento, @idcontacorrente, @tipomovimento, @valor, @datamovimento)",
                                                      new
                                                      {
-                                                         idmovimento = movimentacaoContaDto.idContaCorrente,
+                                                         idmovimento = movimentacaoContaDto.idMovimento,
                                                          idcontacorrente = movimentacaoContaDto.idContaCorrente,
                                                          tipomovimento = movimentacaoContaDto.TipoMovimento,
                                                          valor = movimentacaoContaDto.Valor,
