@@ -139,7 +139,7 @@ namespace ContaCorrente.Application
             if (movimentacaoContaDto.Valor < 0)
                 throw new ValorInvalidoException("Valor inválido para movimentação. Tipo de falha: {0}.", TipoFalha.Invalid_Account);
 
-            if ((!movimentacaoContaDto.TipoMovimento.Equals(TipoMovimento.Credito)) && (!movimentacaoContaDto.TipoMovimento.Equals(TipoMovimento.Debito)))
+            if ((movimentacaoContaDto.TipoMovimento != 'C') && (movimentacaoContaDto.TipoMovimento != 'D'))
                 throw new TipoMovimentoInvalidoException("Tipo de movimento invalido. Tipo de falha: {0}.", TipoFalha.Invalid_Type);
 
             movimentacaoContaDto.idContaCorrente = (await _movimentoRepository.VerificaUltimoIdentificadorMovimento() + 1).ToString();
