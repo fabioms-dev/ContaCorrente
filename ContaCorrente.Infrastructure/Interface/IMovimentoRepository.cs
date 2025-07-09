@@ -19,5 +19,12 @@ namespace ContaCorrente.Infrastructure.Interface
         /// <param name="movimentacaoContaDto"></param>
         /// <returns></returns>
         Task GravarMovimentoContaCorrente(MovimentacaoContaDto movimentacaoContaDto);
+
+        /// <summary>
+        /// Consultar saldo do cliente
+        /// </summary>
+        /// <param name="idContaCorrente"></param>
+        /// <returns></returns>
+        Task<List<SaldoClienteDto>> ConsultarSaldoCliente(string idContaCorrente);
     }
 }

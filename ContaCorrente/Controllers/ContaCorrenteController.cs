@@ -115,6 +115,7 @@ namespace ContaCorrente.Controllers
         /// <param name="movimentacaoContaDto"></param>
         /// <param name="tokenAutenticacao"></param>        
         [HttpPost("api/movimentar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Movimentar([FromHeader] string tokenAutenticacao, [FromBody] MovimentacaoContaDto movimentacaoContaDto)
         {
             try
@@ -142,6 +143,39 @@ namespace ContaCorrente.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Consultar saldo da conta corrente
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("api/saldo/{idContaCorrente}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> ConsultarSaldo([FromHeader] string tokenAutenticacao, string idContaCorrente)
+        {
+            try
+            {
+                var saldo = await _contaCorrenteApplication.ConsultarSaldoCliente(tokenAutenticacao, idContaCorrente);
+                return Ok(saldo);
+            }
+            catch (ContaInvalidaException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UsuarioNaoAutorizadoException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (ContaInativaException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }            
         }
     }
 }

@@ -153,5 +153,38 @@ namespace ContaCorrente.Application
                 throw new Exception("Erro ao gravar movimento da conta corrente: " + ex.Message);
             }
         }
+
+        /// <summary>
+        /// Consultar saldo de cliente
+        /// </summary>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="saldoClienteInputDto"></param>
+        /// <returns></returns>
+        /// <exception cref="ContaInvalidaException"></exception>
+        /// <exception cref="UsuarioNaoAutorizadoException"></exception>
+        /// <exception cref="ContaInativaException"></exception>
+        /// <exception cref="Exception"></exception>
+        public async Task<SaldoClienteDto> ConsultarSaldoCliente(string tokenAutenticacao, string idContaCorrente)
+        {
+            var cliente = await _clienteRepository.ObterClientePorCpf(idContaCorrente) ?? throw new ContaInvalidaException("Conta invalida. Tipo de falha: {0}.", TipoFalha.Invalid_Account);
+            
+            if (!_dominioCliente.ValidarDataExpiracaoToken(tokenAutenticacao))
+                throw new UsuarioNaoAutorizadoException(
+                    "Token expirado. Tipo de falha: {0}.",
+                    TipoFalha.User_Unauthorized);
+
+            if (cliente.Ativo == 0)
+                throw new ContaInativaException("Conta inativa. Tipo de falha: {0}.", TipoFalha.Inactive_Account);
+
+            try
+            {
+                var teste = await _movimentoRepository.ConsultarSaldoCliente(idContaCorrente);
+                return new SaldoClienteDto();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao consultar saldo do cliente: " + ex.Message);
+            }
+        }
     }
 }

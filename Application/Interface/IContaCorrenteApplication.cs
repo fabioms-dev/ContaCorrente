@@ -44,5 +44,17 @@ namespace Application.Interface
         /// <exception cref="TipoMovimentoInvalidoException"></exception>
         /// <exception cref="Exception"></exception>
         Task MovimentarContaCorrente(string tokenAutenticacao, MovimentacaoContaDto movimentacaoContaDto);
+
+        /// <summary>
+        /// Consultar saldo de cliente
+        /// </summary>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="idContaCorrente"></param>
+        /// <returns></returns>
+        /// <exception cref="ContaInvalidaException"></exception>
+        /// <exception cref="UsuarioNaoAutorizadoException"></exception>
+        /// <exception cref="ContaInativaException"></exception>
+        /// <exception cref="Exception"></exception>
+        Task<SaldoClienteDto> ConsultarSaldoCliente(string tokenAutenticacao, string idContaCorrente);
     }
 }

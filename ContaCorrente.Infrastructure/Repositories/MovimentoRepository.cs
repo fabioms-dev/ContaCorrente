@@ -51,5 +51,21 @@ namespace ContaCorrente.Infrastructure.Repositories
                                                      });
             connection.Close();
         }
+
+        /// <summary>
+        /// Consultar saldo do cliente
+        /// </summary>
+        /// <param name="idContaCorrente"></param>
+        /// <returns></returns>
+        public async Task<List<SaldoClienteDto>> ConsultarSaldoCliente(string idContaCorrente)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            var saldoCliente = await connection.ExecuteScalarAsync<List<SaldoClienteDto>>("SELECT idcontacorrente, SUM(CASE WHEN tipo = 'Credito' THEN valor ELSE -valor END) AS Saldo " +
+                                                                              "FROM movimento WHERE idcontacorrente = @idcontacorrente GROUP BY idcontacorrente",
+                                                                              new { idcontacorrente = idContaCorrente });
+            connection.Close();
+            return saldoCliente;
+        }
     }
 }
