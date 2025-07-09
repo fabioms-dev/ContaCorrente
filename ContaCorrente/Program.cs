@@ -14,12 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
   options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IContaCorrenteApplication, ContaCorrenteApplication>();
 builder.Services.AddScoped<IDominioCliente, DominioCliente>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IMovimentoRepository, MovimentoRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -34,8 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = cfg["Issuer"],
             ValidAudience = cfg["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cfg["Key"]))
-        };
-        // Eventualmente customize challenge se quiser padronizar outras falhas
+        };        
     });
 
 var app = builder.Build();
@@ -48,9 +48,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-
-
 
 app.UseAuthorization();
 

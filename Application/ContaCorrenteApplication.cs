@@ -17,17 +17,21 @@ namespace ContaCorrente.Application
     {
         private readonly IDominioCliente _dominioCliente;
         private readonly IClienteRepository _clienteRepository;
+        private readonly IMovimentoRepository _movimentoRepository;
 
         /// <summary>
         /// Construtor da classe ContaCorrenteApplication
         /// </summary>
         /// <param name="dominioCliente"></param>
         /// <param name="clienteRepository"></param>
+        /// <param name="movimentoRepository"></param>
         public ContaCorrenteApplication(IDominioCliente dominioCliente,
-                                        IClienteRepository clienteRepository)
+                                        IClienteRepository clienteRepository,
+                                        IMovimentoRepository movimentoRepository)
         {
             _dominioCliente = dominioCliente;
             _clienteRepository = clienteRepository;
+            _movimentoRepository = movimentoRepository;
         }
 
         /// <summary>
@@ -72,13 +76,13 @@ namespace ContaCorrente.Application
         /// <exception cref="Exception"></exception>
         public async Task<AutenticacaoDto> ValidarLogin(LoginRequestDto loginRequestDto)
         {
-            var cliente = await _clienteRepository.ObterClientePorCpf(loginRequestDto.Cpf) ?? throw new Exception("Cadastro não encontrado");            
-            
+            var cliente = await _clienteRepository.ObterClientePorCpf(loginRequestDto.Cpf) ?? throw new Exception("Cadastro não encontrado");
+
             if (!_dominioCliente.ValidarSenha(cliente.Senha, cliente.Salt, loginRequestDto.Senha))
                 throw new UsuarioNaoAutorizadoException(
                     "Usuário inválido, verique suas credencias. Tipo de falha: {0}.",
                     TipoFalha.User_Unauthorized);
-                                            
+
             return _dominioCliente.GerarTokenAutenticacao(cliente.IdContaCorrente);
         }
 
@@ -106,6 +110,47 @@ namespace ContaCorrente.Application
             catch (Exception ex)
             {
                 throw new Exception("Erro ao gravar dados do cliente: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Movimentar conta corrente
+        /// </summary>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="movimentacaoContaDto"></param>
+        /// <returns></returns>
+        /// <exception cref="ContaInvalidaException"></exception>
+        /// <exception cref="ContaInativaException"></exception>
+        /// <exception cref="ValorInvalidoException"></exception>
+        /// <exception cref="TipoMovimentoInvalidoException"></exception>
+        /// <exception cref="Exception"></exception>
+        public async Task MovimentarContaCorrente(string tokenAutenticacao, MovimentacaoContaDto movimentacaoContaDto)
+        {
+            var cliente = await _clienteRepository.ObterClientePorCpf(movimentacaoContaDto.idContaCorrente) ?? throw new ContaInvalidaException("Conta invalida. Tipo de falha: {0}.", TipoFalha.Invalid_Account);
+
+            if (!_dominioCliente.ValidarDataExpiracaoToken(tokenAutenticacao))
+                throw new UsuarioNaoAutorizadoException(
+                    "Token expirado. Tipo de falha: {0}.",
+                    TipoFalha.User_Unauthorized);
+
+            if (cliente.Ativo == 0)
+                throw new ContaInativaException("Conta inativa. Tipo de falha: {0}.", TipoFalha.Inactive_Account);
+
+            if (movimentacaoContaDto.Valor < 0)
+                throw new ValorInvalidoException("Valor inválido para movimentação. Tipo de falha: {0}.", TipoFalha.Invalid_Account);
+
+            if ((!movimentacaoContaDto.TipoMovimento.Equals(TipoMovimento.Credito)) && (!movimentacaoContaDto.TipoMovimento.Equals(TipoMovimento.Debito)))
+                throw new TipoMovimentoInvalidoException("Tipo de movimento invalido. Tipo de falha: {0}.", TipoFalha.Invalid_Type);
+
+            movimentacaoContaDto.idContaCorrente = (await _movimentoRepository.VerificaUltimoIdentificadorMovimento() + 1).ToString();
+
+            try
+            {
+                await _movimentoRepository.GravarMovimentoContaCorrente(movimentacaoContaDto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao gravar movimento da conta corrente: " + ex.Message);
             }
         }
     }

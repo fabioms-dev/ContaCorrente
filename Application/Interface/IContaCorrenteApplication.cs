@@ -31,5 +31,18 @@ namespace Application.Interface
         /// <exception cref="UsuarioNaoAutorizadoException"></exception>
         /// <exception cref="Exception"></exception>
         Task InativarContaCorrente(string tokenAutenticacao, LoginRequestDto loginRequestDto);
+
+        /// <summary>
+        /// Movimentar conta corrente
+        /// </summary>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="movimentacaoContaDto"></param>
+        /// <returns></returns>
+        /// <exception cref="ContaInvalidaException"></exception>
+        /// <exception cref="ContaInativaException"></exception>
+        /// <exception cref="ValorInvalidoException"></exception>
+        /// <exception cref="TipoMovimentoInvalidoException"></exception>
+        /// <exception cref="Exception"></exception>
+        Task MovimentarContaCorrente(string tokenAutenticacao, MovimentacaoContaDto movimentacaoContaDto);
     }
 }

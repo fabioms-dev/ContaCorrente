@@ -15,5 +15,14 @@ namespace ContaCorrente.Domain.Enum
 
         [Description("Conta inválida")]
         Invalid_Account = 3,
+
+        [Description("Conta inativa")]
+        Inactive_Account = 4,
+
+        [Description("Valor Invalido")]
+        Invalid_Value = 5,
+
+        [Description("Tipo Invalido")]
+        Invalid_Type = 6,
     }  
 }

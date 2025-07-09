@@ -33,6 +33,7 @@ namespace ContaCorrente.Controllers
         /// Cadastrar conta corrente
         /// </summary>
         /// <returns></returns>
+        /// <param name="clienteDto"></param>
         [HttpPost("api/cadastrar")]
         public async Task<IActionResult> Cadastrar([FromBody] ClienteDto clienteDto)
         {
@@ -55,8 +56,9 @@ namespace ContaCorrente.Controllers
         /// <summary>
         /// Efetuar login na conta corrente
         /// </summary>
-        /// <returns> </returns>
-        [HttpPost("api/login")]        
+        /// <returns></returns>
+        /// <param name="loginRequestDto"></param>
+        [HttpPost("api/login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             try
@@ -72,7 +74,7 @@ namespace ContaCorrente.Controllers
             {
                 return Unauthorized(ex.Message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -82,12 +84,14 @@ namespace ContaCorrente.Controllers
         /// Inativar login na conta corrente
         /// </summary>
         /// <returns> </returns>
+        /// <param name="tokenAutenticacao"></param>
+        /// <param name="loginRequestDto"></param>
         [HttpPut("api/inativar")]
-        public async Task<IActionResult> InativarConta([FromHeader] string tokenAutenticacao, [FromBody] LoginRequestDto loginRequestDto)
+        public async Task<IActionResult> Inativar([FromHeader] string tokenAutenticacao, [FromBody] LoginRequestDto loginRequestDto)
         {
             try
             {
-                await _contaCorrenteApplication.InativarContaCorrente(tokenAutenticacao, loginRequestDto);                
+                await _contaCorrenteApplication.InativarContaCorrente(tokenAutenticacao, loginRequestDto);
                 return NoContent();
             }
             catch (ContaInvalidaException ex)
@@ -104,6 +108,40 @@ namespace ContaCorrente.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Movimentar conta corrente
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="movimentacaoContaDto"></param>
+        /// <param name="tokenAutenticacao"></param>        
+        [HttpPost("api/movimentar")]
+        public async Task<IActionResult> Movimentar([FromHeader] string tokenAutenticacao, [FromBody] MovimentacaoContaDto movimentacaoContaDto)
+        {
+            try
+            {
+                await _contaCorrenteApplication.MovimentarContaCorrente(tokenAutenticacao, movimentacaoContaDto);
+                return NoContent();
+            }
+            catch (UsuarioNaoAutorizadoException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ContaInativaException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ValorInvalidoException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (TipoMovimentoInvalidoException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
