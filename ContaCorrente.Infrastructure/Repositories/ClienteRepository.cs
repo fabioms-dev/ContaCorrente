@@ -2,12 +2,14 @@
 using ContaCorrente.Infrastructure.Interface;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ContaCorrente.Infrastructure.Repositories
 {
     /// <summary>
     /// Cliente Repository
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ClienteRepository : IClienteRepository
     {
         const string _connectionString = "Data Source=DESKTOP-ST6PSQ7;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";

@@ -25,6 +25,6 @@ namespace ContaCorrente.Infrastructure.Interface
         /// </summary>
         /// <param name="idContaCorrente"></param>
         /// <returns></returns>
-        Task<List<SaldoClienteDto>> ConsultarSaldoCliente(string idContaCorrente);
+        Task<decimal> ConsultarSaldoCliente(string idContaCorrente);
     }
 }

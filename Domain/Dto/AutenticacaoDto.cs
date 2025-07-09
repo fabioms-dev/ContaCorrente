@@ -1,8 +1,11 @@
-﻿namespace ContaCorrente.Domain.Dto
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ContaCorrente.Domain.Dto
 {
     /// <summary>
     /// Autenticacao Data Transfer Object (DTO)
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class AutenticacaoDto
     {
         /// <summary>

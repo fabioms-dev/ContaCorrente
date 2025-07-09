@@ -109,7 +109,7 @@ namespace ContaCorrente.Application
             }
             catch (Exception ex)
             {
-                throw new Exception("Erro ao gravar dados do cliente: " + ex.Message);
+                throw new Exception("Erro ao atualizar dados da conta do cliente: " + ex.Message);
             }
         }
 
@@ -165,7 +165,7 @@ namespace ContaCorrente.Application
         /// <exception cref="ContaInativaException"></exception>
         /// <exception cref="Exception"></exception>
         public async Task<SaldoClienteDto> ConsultarSaldoCliente(string tokenAutenticacao, string idContaCorrente)
-        {
+        {            
             var cliente = await _clienteRepository.ObterClientePorCpf(idContaCorrente) ?? throw new ContaInvalidaException("Conta invalida. Tipo de falha: {0}.", TipoFalha.Invalid_Account);
             
             if (!_dominioCliente.ValidarDataExpiracaoToken(tokenAutenticacao))
@@ -178,8 +178,8 @@ namespace ContaCorrente.Application
 
             try
             {
-                var teste = await _movimentoRepository.ConsultarSaldoCliente(idContaCorrente);
-                return new SaldoClienteDto();
+                var totalSaldoClientes = await _movimentoRepository.ConsultarSaldoCliente(idContaCorrente);                
+                return new SaldoClienteDto(cliente, totalSaldoClientes);
             }
             catch (Exception ex)
             {

@@ -1,10 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace ContaCorrente.Domain.Dto
 {
     /// <summary>
     /// Cliente Data Transfer Object (DTO)
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ClienteDto
     {        
         public string Nome { get; set; }

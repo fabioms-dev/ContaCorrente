@@ -35,6 +35,8 @@ namespace ContaCorrente.Controllers
         /// <returns></returns>
         /// <param name="clienteDto"></param>
         [HttpPost("api/cadastrar")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Cadastrar([FromBody] ClienteDto clienteDto)
         {
             try
@@ -59,6 +61,9 @@ namespace ContaCorrente.Controllers
         /// <returns></returns>
         /// <param name="loginRequestDto"></param>
         [HttpPost("api/login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             try
@@ -87,6 +92,9 @@ namespace ContaCorrente.Controllers
         /// <param name="tokenAutenticacao"></param>
         /// <param name="loginRequestDto"></param>
         [HttpPut("api/inativar")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Inativar([FromHeader] string tokenAutenticacao, [FromBody] LoginRequestDto loginRequestDto)
         {
             try
@@ -115,7 +123,8 @@ namespace ContaCorrente.Controllers
         /// <param name="movimentacaoContaDto"></param>
         /// <param name="tokenAutenticacao"></param>        
         [HttpPost("api/movimentar")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]        
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Movimentar([FromHeader] string tokenAutenticacao, [FromBody] MovimentacaoContaDto movimentacaoContaDto)
         {
             try
@@ -152,7 +161,7 @@ namespace ContaCorrente.Controllers
         [HttpGet("api/saldo/{idContaCorrente}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ConsultarSaldo([FromHeader] string tokenAutenticacao, string idContaCorrente)
         {
             try

@@ -2,12 +2,14 @@
 using ContaCorrente.Infrastructure.Interface;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ContaCorrente.Infrastructure.Repositories
 {
     /// <summary>
     /// Movimento de conta corrente repository
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class MovimentoRepository : IMovimentoRepository
     {
         const string _connectionString = "Data Source=DESKTOP-ST6PSQ7;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
@@ -57,15 +59,15 @@ namespace ContaCorrente.Infrastructure.Repositories
         /// </summary>
         /// <param name="idContaCorrente"></param>
         /// <returns></returns>
-        public async Task<List<SaldoClienteDto>> ConsultarSaldoCliente(string idContaCorrente)
+        public async Task<decimal> ConsultarSaldoCliente(string idContaCorrente)
         {
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
-            var saldoCliente = await connection.ExecuteScalarAsync<List<SaldoClienteDto>>("SELECT idcontacorrente, SUM(CASE WHEN tipo = 'Credito' THEN valor ELSE -valor END) AS Saldo " +
-                                                                              "FROM movimento WHERE idcontacorrente = @idcontacorrente GROUP BY idcontacorrente",
+            var saldoCliente = await connection.ExecuteScalarAsync<decimal?>("SELECT SUM(valor) " +
+                                                                              "FROM movimento WHERE idcontacorrente = @idcontacorrente",
                                                                               new { idcontacorrente = idContaCorrente });
             connection.Close();
-            return saldoCliente;
+            return saldoCliente ?? 0;
         }
     }
 }
