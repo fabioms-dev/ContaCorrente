@@ -10,7 +10,7 @@ namespace ContaCorrente.Domain.Dto
     {
         public string idMovimento { get; set; }
         public string idContaCorrente { get; set; }
-        public DateTime DataMovimento { get; set; }
+        public string DataMovimento { get; set; }
         public char TipoMovimento { get; set; } // 'C' para crédito, 'D' para débito
         public decimal Valor { get; set; }
     }

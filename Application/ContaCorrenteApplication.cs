@@ -142,7 +142,7 @@ namespace ContaCorrente.Application
             if ((movimentacaoContaDto.TipoMovimento != 'C') && (movimentacaoContaDto.TipoMovimento != 'D'))
                 throw new TipoMovimentoInvalidoException("Tipo de movimento invalido. Tipo de falha: {0}.", TipoFalha.Invalid_Type);
 
-            movimentacaoContaDto.idContaCorrente = (await _movimentoRepository.VerificaUltimoIdentificadorMovimento() + 1).ToString();
+            movimentacaoContaDto.idMovimento = (await _movimentoRepository.VerificaUltimoIdentificadorMovimento() + 1).ToString();
 
             try
             {

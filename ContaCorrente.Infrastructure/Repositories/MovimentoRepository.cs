@@ -41,15 +41,15 @@ namespace ContaCorrente.Infrastructure.Repositories
         {
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
-            await connection.ExecuteScalarAsync<int>("INSERT INTO movimento (idmovimento, idcontacorrente, tipo, valor, datahora) " +
-                                                     "VALUES (@idmovimento, @idcontacorrente, @tipo, @valor, @datahora)",
+            await connection.ExecuteScalarAsync<int>("INSERT INTO movimento (idmovimento, idcontacorrente, tipomovimento, valor, datamovimento) " +
+                                                     "VALUES (@idmovimento, @idcontacorrente, @tipomovimento, @valor, @datamovimento)",
                                                      new
                                                      {
                                                          idmovimento = movimentacaoContaDto.idContaCorrente,
                                                          idcontacorrente = movimentacaoContaDto.idContaCorrente,
-                                                         tipo = movimentacaoContaDto.TipoMovimento,
+                                                         tipomovimento = movimentacaoContaDto.TipoMovimento,
                                                          valor = movimentacaoContaDto.Valor,
-                                                         datahora = DateTime.Now
+                                                         datamovimento = DateTime.Now.ToShortDateString()
                                                      });
             connection.Close();
         }
