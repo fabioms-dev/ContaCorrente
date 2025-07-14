@@ -37,7 +37,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cfg["Key"]))
         };        
     });
-builder.WebHost.UseUrls("http://0.0.0.0:80");
+builder.WebHost.UseUrls("http://127.0.0.1:80");
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
